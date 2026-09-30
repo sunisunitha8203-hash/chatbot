@@ -1,213 +1,348 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Student Doubt Chatbot</title>
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
-<style>
-
-body{
-    background:#f4f6f9;
-}
-
-.navbar{
-    background:#0d6efd;
-}
-
-.chat-box{
-    height:500px;
-    overflow-y:auto;
-    background:white;
-    border-radius:10px;
-    padding:20px;
-    box-shadow:0px 5px 15px rgba(0,0,0,0.1);
-}
-
-.bot{
-    background:#e9f5ff;
-    padding:12px;
-    border-radius:10px;
-    margin-bottom:15px;
-}
-
-.user{
-    background:#d1ffd6;
-    padding:12px;
-    border-radius:10px;
-    margin-bottom:15px;
-    text-align:right;
-}
-
-.input-box{
-    margin-top:20px;
-}
-.bot-answer h1,
-.bot-answer h2,
-.bot-answer h3{
-    color:#0d6efd;
-    margin-top:10px;
-}
-
-.bot-answer p{
-    margin-bottom:10px;
-}
-
-.bot-answer ul{
-    padding-left:20px;
-}
-
-.bot-answer li{
-    margin-bottom:5px;
-}
-
-.bot-answer strong{
-    color:#198754;
-}
-
-.bot-answer code{
-    background:#f4f4f4;
-    padding:2px 5px;
-    border-radius:5px;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Document Studio | Student Doubt Chatbot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+            --ink: #1d2924;
+            --muted: #68756e;
+            --paper: #f5f7f3;
+            --panel: #fff;
+            --line: #dce4dc;
+            --green: #28664d;
+            --green-soft: #e6f1e9;
+            --coral: #c4543c;
+            --mono: "DM Mono", monospace;
+            --sans: "Manrope", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            color: var(--ink);
+            background-color: var(--paper);
+            background-image: radial-gradient(#dbe4da 0.7px, transparent 0.7px);
+            background-size: 18px 18px;
+            font-family: var(--sans);
+        }
+        button, input { font: inherit; }
+        button { cursor: pointer; }
+        .topbar {
+            min-height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 5vw;
+            background: #1d2924;
+            color: #fff;
+        }
+        .brand { display: flex; align-items: center; gap: 12px; color: inherit; text-decoration: none; }
+        .brand-mark { display: grid; place-items: center; width: 32px; height: 32px; background: #d3edda; color: #1d2924; font-weight: 800; }
+        .brand-name { font-size: 14px; font-weight: 800; }
+        .brand-sub { margin-top: 2px; color: #b6c5bb; font: 10px var(--mono); }
+        .nav-links { display: flex; align-items: center; gap: 8px; }
+        .nav-links a { padding: 8px 10px; color: #e4ece6; text-decoration: none; font-size: 12px; }
+        .nav-links a:hover { color: #a8ddb7; }
+        .workspace { width: min(1360px, 94vw); margin: 34px auto 54px; }
+        .page-heading { display: flex; justify-content: space-between; align-items: end; gap: 16px; margin-bottom: 22px; }
+        .eyebrow { color: var(--green); font: 11px var(--mono); text-transform: uppercase; }
+        h1 { margin: 8px 0 4px; font-size: clamp(25px, 3vw, 34px); line-height: 1.15; }
+        .intro { margin: 0; color: var(--muted); font-size: 13px; }
+        .model-badge { display: flex; align-items: center; gap: 8px; padding: 10px 13px; border: 1px solid var(--line); background: var(--panel); font: 11px var(--mono); }
+        .dot { width: 8px; height: 8px; flex: none; border-radius: 50%; background: #9a5547; }
+        .dot.online { background: #3a9a65; }
+        .layout { display: grid; grid-template-columns: 340px minmax(0, 1fr); gap: 18px; align-items: start; }
+        .sidebar, .conversation { border: 1px solid var(--line); background: var(--panel); }
+        .sidebar-section { padding: 20px; border-bottom: 1px solid var(--line); }
+        .sidebar-section:last-child { border-bottom: 0; }
+        .section-heading { display: flex; justify-content: space-between; align-items: center; margin: 0 0 14px; font-size: 13px; font-weight: 800; }
+        .section-index { color: var(--green); font: 10px var(--mono); }
+        .dropzone { display: block; padding: 20px 14px; border: 1px dashed #a9b9ac; background: #f8faf7; text-align: center; cursor: pointer; }
+        .dropzone:hover { border-color: var(--green); background: #f2f8f2; }
+        .upload-icon { display: grid; place-items: center; width: 34px; height: 34px; margin: 0 auto 9px; background: var(--green-soft); color: var(--green); font-size: 18px; }
+        .drop-title { display: block; font-size: 12px; font-weight: 700; }
+        .drop-hint { display: block; margin-top: 5px; color: var(--muted); font: 10px var(--mono); }
+        #document { position: absolute; width: 1px; height: 1px; opacity: 0; }
+        .file-name { min-height: 17px; margin: 9px 0; color: var(--muted); font: 10px var(--mono); overflow-wrap: anywhere; }
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 13px; }
+        .field label, .setting label { display: block; margin-bottom: 6px; color: var(--muted); font: 10px var(--mono); }
+        .field input { width: 100%; padding: 8px 9px; border: 1px solid var(--line); background: #fff; color: var(--ink); font-size: 12px; }
+        .primary-button, .quiet-button { min-height: 37px; border: 0; font-size: 11px; font-weight: 800; }
+        .primary-button { width: 100%; margin-top: 12px; background: var(--green); color: #fff; }
+        .primary-button:hover { background: #1e503b; }
+        .primary-button:disabled { opacity: 0.55; cursor: wait; }
+        .quiet-button { padding: 6px 9px; background: transparent; color: var(--coral); }
+        .document-list { display: grid; gap: 8px; }
+        .document-row { display: flex; justify-content: space-between; gap: 10px; padding: 9px; background: #f4f7f3; }
+        .document-title { overflow: hidden; color: var(--ink); font-size: 11px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+        .document-meta { margin-top: 4px; color: var(--muted); font: 9px var(--mono); }
+        .empty-state { color: var(--muted); font-size: 11px; }
+        .stat-line { display: flex; justify-content: space-between; margin-top: 12px; color: var(--muted); font: 10px var(--mono); }
+        .stat-line strong { color: var(--ink); font-weight: 500; }
+        .setting { margin-top: 13px; }
+        .setting input[type="range"] { width: 100%; accent-color: var(--green); }
+        .setting-output { float: right; color: var(--ink); }
+        .pipeline { color: var(--muted); font: 9px/1.8 var(--mono); }
+        .conversation { display: flex; min-height: 650px; flex-direction: column; }
+        .conversation-head { display: flex; justify-content: space-between; align-items: center; padding: 15px 19px; border-bottom: 1px solid var(--line); }
+        .conversation-title { font-size: 12px; font-weight: 800; }
+        .conversation-note { margin-top: 4px; color: var(--muted); font: 9px var(--mono); }
+        .clear-chat { border: 0; background: transparent; color: var(--muted); font-size: 10px; }
+        .messages { display: flex; flex: 1; flex-direction: column; gap: 15px; overflow-y: auto; padding: 22px; }
+        .message { max-width: 88%; padding: 13px 15px; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; line-height: 1.7; }
+        .assistant-message { align-self: flex-start; border-left: 3px solid var(--green); background: #f1f6f1; }
+        .user-message { align-self: flex-end; background: #24352d; color: #fff; }
+        .message-label { display: block; margin-bottom: 5px; color: var(--green); font: 9px var(--mono); text-transform: uppercase; }
+        .user-message .message-label { color: #add9b8; }
+        .sources { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 9px; }
+        .sources summary { color: var(--green); cursor: pointer; font-size: 10px; font-weight: 800; }
+        .source-item { margin-top: 9px; padding: 9px; background: #fff; border: 1px solid var(--line); }
+        .source-meta { color: var(--green); font: 9px var(--mono); }
+        .source-text { margin-top: 6px; color: var(--muted); font-size: 10px; line-height: 1.6; white-space: pre-wrap; }
+        .composer { padding: 16px 19px; border-top: 1px solid var(--line); }
+        .composer-row { display: flex; gap: 9px; }
+        .composer input { min-width: 0; flex: 1; padding: 12px; border: 1px solid var(--line); outline: none; font-size: 12px; }
+        .composer input:focus { border-color: var(--green); }
+        .composer .primary-button { width: 88px; margin: 0; }
+        .composer-hint { margin-top: 8px; color: var(--muted); font: 9px var(--mono); }
+        .notice { min-height: 17px; margin-top: 8px; color: var(--coral); font-size: 10px; }
+        @media (max-width: 800px) {
+            .topbar { padding: 12px 4vw; }
+            .nav-links { gap: 0; }
+            .nav-links a { padding: 7px 6px; font-size: 10px; }
+            .workspace { width: 92vw; margin-top: 24px; }
+            .page-heading { align-items: start; flex-direction: column; }
+            .layout { grid-template-columns: 1fr; }
+            .conversation { min-height: 560px; }
+        }
+        @media (max-width: 450px) {
+            .brand-sub { display: none; }
+            .nav-links a { font-size: 9px; }
+            .sidebar-section { padding: 16px; }
+            .messages { padding: 14px; }
+        }
+    </style>
 </head>
-
 <body>
+    <header class="topbar">
+        <a class="brand" href="/chat">
+            <span class="brand-mark">D</span>
+            <span><span class="brand-name">Document Studio</span><span class="brand-sub">LOCAL RAG WORKSHOP</span></span>
+        </a>
+        <nav class="nav-links" aria-label="Main navigation">
+            <a href="/chat">Studio</a><a href="/history">History</a><a href="/profile">Profile</a><a href="/logout">Sign out</a>
+        </nav>
+    </header>
 
-<nav class="navbar navbar-dark bg-primary">
-<div class="container">
+    <main class="workspace">
+        <div class="page-heading">
+            <div><div class="eyebrow">Student Doubt Chatbot / Lab 01</div><h1>Chat with your documents.</h1><p class="intro">Local retrieval, visible sources, answers grounded in your files.</p></div>
+            <div class="model-badge"><span id="ollamaDot" class="dot"></span><span id="modelStatus">Checking Ollama...</span></div>
+        </div>
 
-<a class="navbar-brand" href="/">🎓 Student Doubt Chatbot</a>
+        <div class="layout">
+            <aside class="sidebar" aria-label="Knowledge base and controls">
+                <section class="sidebar-section">
+                    <h2 class="section-heading"><span>Knowledge base</span><span class="section-index">01 / INGEST</span></h2>
+                    <form id="uploadForm">
+                        <label class="dropzone" for="document"><span class="upload-icon">+</span><span class="drop-title">Choose a document</span><span class="drop-hint">PDF or DOCX · up to 20 MB</span></label>
+                        <input id="document" name="document" type="file" accept=".pdf,.docx,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" required>
+                        <div id="fileName" class="file-name">No file selected</div>
+                        <div class="field-row">
+                            <div class="field"><label for="chunkSize">CHUNK WORDS</label><input id="chunkSize" name="chunk_size" type="number" value="700" min="50" max="5000"></div>
+                            <div class="field"><label for="overlap">OVERLAP</label><input id="overlap" name="overlap" type="number" value="100" min="0" max="4999"></div>
+                        </div>
+                        <button id="uploadButton" class="primary-button" type="submit">Extract &amp; index</button>
+                        <div id="uploadNotice" class="notice" role="status"></div>
+                    </form>
+                </section>
+                <section class="sidebar-section">
+                    <h2 class="section-heading"><span>Indexed documents</span><span id="documentCount" class="section-index">0 FILES</span></h2>
+                    <div id="documentList" class="document-list"><div class="empty-state">Your knowledge base is empty.</div></div>
+                    <div class="stat-line"><span>Chunks / vectors</span><strong id="chunkCount">0</strong></div>
+                    <div class="stat-line"><span>Embedding model</span><strong>MiniLM-L6-v2 · local</strong></div>
+                    <button id="clearDocuments" class="quiet-button" type="button" hidden>Clear document index</button>
+                </section>
+                <section class="sidebar-section">
+                    <h2 class="section-heading"><span>Retrieval settings</span><span class="section-index">02 / SEARCH</span></h2>
+                    <div class="setting"><label for="topK">TOP-K <output id="topKOutput" class="setting-output">3</output></label><input id="topK" type="range" min="1" max="8" value="3"></div>
+                    <div class="setting"><label for="threshold">MIN SIMILARITY <output id="thresholdOutput" class="setting-output">0.20</output></label><input id="threshold" type="range" min="0" max="0.8" step="0.05" value="0.2"></div>
+                    <div class="setting"><label for="temperature">TEMPERATURE <output id="temperatureOutput" class="setting-output">0.2</output></label><input id="temperature" type="range" min="0" max="1" step="0.1" value="0.2"></div>
+                    <div class="stat-line"><span>Cosine similarity</span><strong>normalized vectors</strong></div>
+                </section>
+                <section class="sidebar-section"><div class="pipeline">DOCUMENT → EXTRACT → CHUNK<br>→ EMBED → RETRIEVE → CONTEXT → LLM</div></section>
+            </aside>
 
-<div>
-    <a href="/chat" class="btn btn-light btn-sm">Chat</a>
-    <a href="/history" class="btn btn-warning btn-sm">History</a>
-    <a href="/profile" class="btn btn-info btn-sm">Profile</a>
-    <a href="/logout" class="btn btn-danger btn-sm">Logout</a>
-</div>
+            <section class="conversation" aria-label="Document chat">
+                <div class="conversation-head"><div><div class="conversation-title">Ask your knowledge base</div><div class="conversation-note">Retrieved context is attached to each answer.</div></div><button id="clearChat" class="clear-chat" type="button">Clear chat</button></div>
+                <div id="messages" class="messages" aria-live="polite">
+                    <div class="message assistant-message"><span class="message-label">Workshop assistant</span>Upload a syllabus, assignment, or notes. Ask a question and inspect the exact chunks retrieved before the local model answers.</div>
+                </div>
+                <form id="askForm" class="composer">
+                    <div class="composer-row"><input id="question" type="text" maxlength="1000" placeholder="Ask about your uploaded document..." autocomplete="off" required><button id="askButton" class="primary-button" type="submit" disabled>Ask</button></div>
+                    <div id="askNotice" class="notice" role="status"></div>
+                    <div class="composer-hint">QWEN PREFERRED · LLAMA FALLBACK · OLLAMA LOCAL</div>
+                </form>
+            </section>
+        </div>
+    </main>
 
-</div>
-</nav>
+    <script>
+        const messages = document.getElementById("messages");
+        const uploadNotice = document.getElementById("uploadNotice");
+        const askNotice = document.getElementById("askNotice");
 
-</div>
-</nav>
+        function addMessage(label, text, kind = "assistant-message", sources = []) {
+            const message = document.createElement("div");
+            message.className = `message ${kind}`;
+            const heading = document.createElement("span");
+            heading.className = "message-label";
+            heading.textContent = label;
+            message.append(heading, document.createTextNode(text));
+            if (sources.length) {
+                const details = document.createElement("details");
+                details.className = "sources";
+                const summary = document.createElement("summary");
+                summary.textContent = `Retrieved sources (${sources.length})`;
+                details.append(summary);
+                sources.forEach(source => {
+                    const item = document.createElement("div");
+                    item.className = "source-item";
+                    const meta = document.createElement("div");
+                    meta.className = "source-meta";
+                    meta.textContent = `${source.chunk_id} · ${source.page ? `page ${source.page} · ` : ""}similarity ${source.similarity.toFixed(3)}`;
+                    const content = document.createElement("div");
+                    content.className = "source-text";
+                    content.textContent = source.text;
+                    item.append(meta, content);
+                    details.append(item);
+                });
+                message.append(details);
+            }
+            messages.append(message);
+            messages.scrollTop = messages.scrollHeight;
+        }
 
-<div class="container mt-5">
+        async function refreshStatus() {
+            try {
+                const response = await fetch("/status");
+                const status = await response.json();
+                const ollama = status.ollama;
+                document.getElementById("modelStatus").textContent = ollama.model ? `${ollama.family} · ${ollama.model}` : ollama.message;
+                document.getElementById("ollamaDot").classList.toggle("online", Boolean(ollama.model));
+                document.getElementById("documentCount").textContent = `${status.document_count} FILE${status.document_count === 1 ? "" : "S"}`;
+                document.getElementById("chunkCount").textContent = status.chunk_count;
+                document.getElementById("askButton").disabled = !status.chunk_count;
+                askNotice.textContent = status.chunk_count ? "" : "Upload and index a PDF or DOCX before asking a question.";
+                const list = document.getElementById("documentList");
+                list.replaceChildren();
+                const entries = Object.entries(status.documents);
+                if (!entries.length) {
+                    const empty = document.createElement("div");
+                    empty.className = "empty-state";
+                    empty.textContent = "Your knowledge base is empty.";
+                    list.append(empty);
+                }
+                entries.forEach(([name, stats]) => {
+                    const row = document.createElement("div");
+                    row.className = "document-row";
+                    const info = document.createElement("div");
+                    info.style.minWidth = "0";
+                    const title = document.createElement("div");
+                    title.className = "document-title";
+                    title.textContent = name;
+                    const meta = document.createElement("div");
+                    meta.className = "document-meta";
+                    meta.textContent = `${stats.characters.toLocaleString()} chars · ${stats.pages} page(s) · ${stats.chunks} chunks`;
+                    info.append(title, meta);
+                    row.append(info);
+                    list.append(row);
+                });
+                document.getElementById("clearDocuments").hidden = !entries.length;
+            } catch {
+                document.getElementById("modelStatus").textContent = "Status unavailable";
+                askNotice.textContent = "Could not check the document index. Refresh the page and try again.";
+            }
+        }
 
-<div class="chat-box" id="chatBox">
-
-<div class="bot">
-<b>AI Tutor 🤖</b><br>
-Hello! 👋<br>
-Ask me any programming or academic doubt.
-</div>
-
-</div>
-
-<div class="input-box">
-
-<div class="input-group">
-
-<input
-type="text"
-id="question"
-class="form-control"
-placeholder="Type your question here..."
-onkeypress="if(event.key==='Enter'){sendMessage()}">
-
-<button
-class="btn btn-primary"
-onclick="sendMessage()">
-Send
-</button>
-
-</div>
-
-</div>
-
-</div>
-
-<script>
-
-async function sendMessage(){
-
-    let question = document.getElementById("question").value.trim();
-
-    if(question=="")
-        return;
-
-    let chat = document.getElementById("chatBox");
-
-    // Show user's message
-    chat.innerHTML += `
-    <div class="user">
-        <b>You 👨‍🎓</b><br>
-        ${question}
-    </div>
-    `;
-
-    document.getElementById("question").value="";
-
-    // Loading message
-    chat.innerHTML += `
-    <div class="bot" id="loading">
-        🤖 Thinking...
-    </div>
-    `;
-
-    chat.scrollTop = chat.scrollHeight;
-
-    try{
-
-        const response = await fetch("/ask",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                question:question
-            })
+        document.getElementById("document").addEventListener("change", event => {
+            const file = event.target.files[0];
+            document.getElementById("fileName").textContent = file ? `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB` : "No file selected";
         });
-
-        const data = await response.json();
-
-        // Remove loading
-        document.getElementById("loading").remove();
-
-        // Show AI answer
-        chat.innerHTML += `
-        <div class="bot">
-            <b>AI Tutor 🤖</b><br>
-            <div class="bot-answer">
-                ${data.answer}
-            </div>
-        </div>
-        `;
-
-        chat.scrollTop = chat.scrollHeight;
-
-    }
-    catch(error){
-
-        document.getElementById("loading").remove();
-
-        chat.innerHTML += `
-        <div class="bot">
-            ❌ Error connecting to AI.
-        </div>
-        `;
-    }
-
-}
-
-</script>
-
+        document.getElementById("uploadForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            const button = document.getElementById("uploadButton");
+            button.disabled = true;
+            button.textContent = "Extracting and embedding...";
+            uploadNotice.textContent = "Text extraction and local embedding can take a moment.";
+            try {
+                const response = await fetch("/upload", { method: "POST", body: new FormData(event.currentTarget) });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || "Upload failed.");
+                uploadNotice.textContent = `Indexed ${result.filename}: ${result.chunks} chunks from ${result.pages} page(s).`;
+                event.currentTarget.reset();
+                document.getElementById("fileName").textContent = "No file selected";
+                await refreshStatus();
+            } catch (error) {
+                uploadNotice.textContent = error.message;
+            } finally {
+                button.disabled = false;
+                button.textContent = "Extract & index";
+            }
+        });
+        document.getElementById("askForm").addEventListener("submit", async event => {
+            event.preventDefault();
+            const button = document.getElementById("askButton");
+            if (button.disabled) return;
+            const input = document.getElementById("question");
+            const question = input.value.trim();
+            if (!question) return;
+            askNotice.textContent = "";
+            addMessage("You", question, "user-message");
+            input.value = "";
+            button.disabled = true;
+            button.textContent = "...";
+            try {
+                const response = await fetch("/ask", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        question,
+                        top_k: Number(document.getElementById("topK").value),
+                        threshold: Number(document.getElementById("threshold").value),
+                        temperature: Number(document.getElementById("temperature").value)
+                    })
+                });
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || "Could not answer this question.");
+                addMessage(result.model ? `Local assistant · ${result.model}` : "Workshop assistant", result.answer, "assistant-message", result.sources || []);
+            } catch (error) {
+                askNotice.textContent = error.message;
+            } finally {
+                button.disabled = false;
+                button.textContent = "Ask";
+                input.focus();
+            }
+        });
+        document.getElementById("clearChat").addEventListener("click", () => {
+            messages.replaceChildren();
+        });
+        document.getElementById("clearDocuments").addEventListener("click", async () => {
+            const response = await fetch("/clear-documents", { method: "POST" });
+            if (response.ok) await refreshStatus();
+        });
+        [["topK", "topKOutput", value => value], ["threshold", "thresholdOutput", value => Number(value).toFixed(2)], ["temperature", "temperatureOutput", value => Number(value).toFixed(1)]].forEach(([inputId, outputId, format]) => {
+            document.getElementById(inputId).addEventListener("input", event => {
+                document.getElementById(outputId).value = format(event.target.value);
+                document.getElementById(outputId).textContent = format(event.target.value);
+            });
+        });
+        refreshStatus();
+    </script>
 </body>
 </html>

@@ -1,21 +1,13 @@
-import os
-from google import genai
+from core.ollama_client import detect_ollama_models, generate_grounded_answer
 
 
-API_KEY = ""  # <-- Put your actual API key here
-
-client = genai.Client(api_key=API_KEY)
-
-def get_ai_response(question):
-    try:
-        response = client.models.generate_content(
-            model="gemini-3.1-flash-lite",
-            contents=question
-        )
-        return response.text
-    except Exception as e:
-        return f"Error: {e}"
-
-
-if __name__ == "__main__":
-    print(get_ai_response("Hello! Are you working?"))
+def get_ai_response(question, sources, temperature=0.2, model=None):
+    """Generate an answer only from chunks retrieved from uploaded documents."""
+    if model is None:
+        model_status = detect_ollama_models()
+        if not model_status["connected"] or not model_status["model"]:
+            raise RuntimeError(model_status["message"])
+        model = model_status["model"]
+    return generate_grounded_answer(
+        question, sources, model, temperature=temperature
+    )

@@ -1,12 +1,8 @@
-from google import genai
-import os
-from dotenv import load_dotenv
+from core.ollama_client import detect_ollama_models
 
-load_dotenv()
 
-client = genai.Client(
-    api_key=os.getenv("GEMINI_API_KEY")
-)
-
-for model in client.models.list():
-    print(model.name)
+if __name__ == "__main__":
+    status = detect_ollama_models()
+    print(status["message"])
+    for model in status["models"]:
+        print(model)

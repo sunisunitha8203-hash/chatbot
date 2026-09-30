@@ -1,0 +1,1 @@
+"""Local document retrieval and Ollama integration."""
